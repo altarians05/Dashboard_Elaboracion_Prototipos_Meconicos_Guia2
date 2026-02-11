@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 8: Glosario Técnico - TecnoAcademia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --sena-green: #39A900; 
+            --sena-blue: #00324D; 
+            --sena-orange: #FF6C00; 
+            --bg-body: #F4F6F9; 
+            --bg-card: #FFFFFF; 
+            --text-gray: #59667a; 
+            --shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            --radius: 12px; 
+            --sidebar-width: 320px; 
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-body); color: var(--sena-blue); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        header { background-color: var(--bg-card); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 100; position: sticky; top: 0; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+
+.module-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--sena-blue);
+    text-transform: uppercase; /* Convierte a mayúsculas */
+    letter-spacing: 1.7px;      /* Espacio entre letras de 1.7 */
+    flex: 1;                    /* Ayuda a centrar o distribuir el espacio */
+    text-align: center;         /* Centra el texto entre los logos */
+}
+
+        .back-btn { text-decoration: none; color: var(--sena-blue); font-weight: bold; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
+        .back-btn:hover { color: var(--sena-orange); }
+
+        .main-layout { display: flex; flex: 1; max-width: 1400px; margin: 2rem auto; gap: 2rem; width: 100%; padding: 0 20px; align-items: stretch; }
+
+        .sidebar { 
+            width: var(--sidebar-width); 
+            background: var(--bg-card); 
+            border-radius: var(--radius); 
+            box-shadow: var(--shadow); 
+            padding: 1.5rem; 
+            display: flex; 
+            flex-direction: column; 
+            height: calc(100vh - 100px); /* Ajuste para scroll interno */
+            position: sticky;
+            top: 100px;
+        }
+        .sidebar h3 { font-family: 'Montserrat'; color: var(--sena-green); margin-bottom: 1rem; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 1.1rem; }
+        
+        .search-container { margin-bottom: 1rem; }
+        .search-box { width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; outline: none; }
+        .search-box:focus { border-color: var(--sena-green); }
+
+        .menu-list { flex: 1; overflow-y: auto; padding-right: 5px; }
+        /* Scrollbar estilizado */
+        .menu-list::-webkit-scrollbar { width: 6px; }
+        .menu-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+        .menu-item { 
+            display: flex; align-items: center; gap: 12px; padding: 12px; margin-bottom: 6px; 
+            border-radius: 8px; cursor: pointer; transition: all 0.3s; color: var(--text-gray); 
+            font-weight: 500; border: 1px solid transparent; font-size: 0.9rem;
+        }
+        .menu-item i { width: 25px; text-align: center; color: var(--sena-blue); }
+        .menu-item:hover { background: #f0fdf4; color: var(--sena-green); }
+        .menu-item:hover i { color: var(--sena-green); }
+        .menu-item.active { background: var(--sena-green); color: white; box-shadow: 0 4px 10px rgba(57, 169, 0, 0.3); border-color: var(--sena-green); }
+        .menu-item.active i { color: white; }
+
+        .content-area { flex: 1; background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2.5rem; display: flex; flex-direction: column; min-height: 600px; }
+        
+        #definition-display { animation: fadeIn 0.4s ease-out; width: 100%; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .term-title { font-family: 'Montserrat'; color: var(--sena-blue); font-size: 2.2rem; margin-bottom: 1rem; border-bottom: 3px solid var(--sena-orange); display: inline-block; padding-bottom: 5px; }
+        
+        .def-layout { display: grid; grid-template-columns: 1fr 300px; gap: 30px; align-items: start; }
+        .def-text-side p { font-size: 1.1rem; color: #444; margin-bottom: 15px; line-height: 1.7; text-align: justify;}
+
+        /* ESTILOS DE TARJETAS */
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .info-card { padding: 15px; border-radius: 8px; font-size: 0.9rem; border-left: 5px solid; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .info-card h4 { margin-bottom: 5px; display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 700; }
+        
+        .card-tip { background: #fff8e1; border-color: #ffc107; color: #856404; }
+        .card-challenge { background: #e3f2fd; border-color: #2196f3; color: #0d47a1; }
+        .card-tech { background: #e8f5e9; border-color: #4caf50; color: #1b5e20; }
+        .card-real { background: #f3e5f5; border-color: #9c27b0; color: #4a148c; }
+
+        .def-image-side img { width: 100%; height: 250px; object-fit: cover; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: 5px solid white; margin-bottom: 15px; }
+        .image-caption { font-size: 0.8rem; color: #777; font-style: italic; text-align: center; }
+
+        .sidebar-footer { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee; }
+        .progress-bar-bg { background: #eee; height: 8px; border-radius: 10px; margin: 15px 0; }
+        .progress-bar-fill { background: var(--sena-orange); height: 100%; width: 0%; border-radius: 10px; transition: 0.5s; }
+        
+        .finish-btn { width: 100%; padding: 12px; background: #ccc; color: white; border: none; border-radius: 8px; cursor: not-allowed; font-weight: bold; transition: 0.3s; }
+        .finish-btn.ready { background: var(--sena-green); cursor: pointer; box-shadow: 0 4px 15px rgba(57, 169, 0, 0.4); }
+        .finish-btn.ready:hover { transform: translateY(-2px); }
+
+        /* Estado inicial vacío */
+        .empty-state { text-align: center; color: #999; margin-top: 50px; }
+        .empty-state i { font-size: 4rem; margin-bottom: 20px; color: #ddd; }
+
+        @media (max-width: 992px) { 
+            .main-layout { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: static; }
+            .def-layout { grid-template-columns: 1fr; } 
+            .cards-grid { grid-template-columns: 1fr; } 
+        }
+
+/* Animación de pulso para el trofeo */
+@keyframes trophyBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+#congrats-content i {
+    animation: trophyBounce 2s infinite ease-in-out;
+}
+    </style>
+</head>
+<body>
+
+    <header>
+    <div class="header-left">
+        <img src="imagenes/Logos/sena.png" alt="SENA Logo" style="height: 50px;">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Centro de Comando</a>
+    </div>
+
+    <div class="module-title">Módulo 8: Glosario</div>
+
+    <img src="imagenes/Logos/tecnoacademia.jpeg" alt="TecnoAcademia Logo" style="height: 50px;">
+</header>
+
+    <div class="main-layout">
+        <aside class="sidebar">
+            <h3><i class="fas fa-book-open"></i> Glosario de Ingeniería</h3>
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="Buscar término..." onkeyup="filterMenu(this.value)">
+            </div>
+            <div class="menu-list" id="menu-list">
+                </div>
+            <div class="sidebar-footer">
+                <small>Progreso de Lectura: <span id="count">0</span>/27</small>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill"></div></div>
+                <button id="btn-finish" class="finish-btn" onclick="finishModule()">Finalizar Glosario</button>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <div id="definition-display">
+                <div class="empty-state">
+                    <i class="fas fa-mouse-pointer"></i>
+                    <h2>Selecciona un término</h2>
+                    <p>Haz clic en el menú de la izquierda para ver las definiciones técnicas y ejemplos.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<div id="congrats-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; display: none; flex-direction: column; opacity: 0; transition: opacity 0.5s ease;">
+    <div style="background: white; padding: 3rem; border-radius: 20px; text-align: center; max-width: 500px; transform: scale(0.7); transition: transform 0.5s ease;" id="congrats-content">
+        <i class="fas fa-trophy" style="font-size: 5rem; color: #FFD700; margin-bottom: 1rem;"></i>
+        <h1 style="font-family: 'Montserrat'; color: var(--sena-blue); margin-bottom: 1rem;">¡Excelente Trabajo!</h1>
+        <p style="font-size: 1.2rem; color: var(--text-gray); margin-bottom: 2rem;">Has completado el Glosario Técnico de Ingeniería con éxito.</p>
+        <button onclick="window.location.href='index.html'" style="padding: 15px 30px; background: var(--sena-green); color: white; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(57,169,0,0.3);">
+            <i class="fas fa-home"></i> Continuar al Inicio
+        </button>
+    </div>
+</div>
+
+    <script>
+        // DATOS DEL GLOSARIO ACTUALIZADOS
+        const glossaryData = [
+            { 
+                term: "Ajuste", 
+                icon: "fa-cogs",
+                def: "Es la relación dimensional y mecánica entre dos piezas que deben ensamblarse. Define qué tan apretadas o sueltas estarán las partes entre sí. Existen tres tipos principales: 'Ajuste con Juego' (se mueven libremente), 'Ajuste Indeterminado' y 'Ajuste con Interferencia' (quedan fijas a presión). Es fundamental para asegurar que las máquinas funcionen sin desarmarse o trabarse.", 
+                img: "https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?auto=format&fit=crop&w=600&q=80",
+                caption: "Ensamblaje mecánico de precisión.",
+                tip: "Si una pieza debe rotar dentro de otra, necesitas un ajuste con holgura (juego).",
+                challenge: "¿Qué tipo de ajuste crees que tiene la tapa de un bolígrafo?",
+                tech: "Se representa con códigos ISO como H7/g6 en los planos.",
+                real: "En un motor, el pistón tiene un ajuste microscópico para moverse sin dejar escapar gas."
+            },
+            { 
+                term: "Alzado", 
+                icon: "fa-arrow-up",
+                def: "Es la vista vertical principal de un objeto en un plano técnico. Muestra el objeto tal como se ve de frente, destacando su altura y anchura, pero ignorando la profundidad. Es usualmente la vista que ofrece más información sobre la forma del objeto y sirve como referencia para alinear las demás vistas (perfil y planta).", 
+                img: "https://images.unsplash.com/photo-1503387762-592dea58ef23?auto=format&fit=crop&w=600&q=80",
+                caption: "Vista frontal en un plano arquitectónico.",
+                tip: "Elige como alzado la cara del objeto que tenga más detalles.",
+                challenge: "Dibuja el alzado de tu teléfono móvil.",
+                tech: "En el sistema europeo, el alzado suele ubicarse arriba a la izquierda.",
+                real: "Los arquitectos usan el alzado para mostrar cómo se verá la fachada de un edificio."
+            },
+            { 
+                term: "Boceto", 
+                icon: "fa-pencil-alt",
+                def: "Dibujo preliminar realizado generalmente a mano alzada (sin instrumentos de precisión). Representa la primera materialización visual de una idea o diseño. No suele tener medidas exactas, pero sí respeta las proporciones generales y explica la funcionalidad básica. Es vital para comunicar ideas rápidamente antes de usar el computador.", 
+                img: "https://images.unsplash.com/photo-1513187219967-0c7f1a547702?auto=format&fit=crop&w=600&q=80",
+                caption: "Ideación rápida en cuaderno de ingeniería.",
+                tip: "No uses borrador, deja que las líneas fluyan para encontrar la forma.",
+                challenge: "Haz un boceto de una silla futurista en 30 segundos.",
+                tech: "Los bocetos suelen incluir anotaciones o flechas explicando movimientos.",
+                real: "Los diseñadores de autos hacen miles de bocetos antes de modelar el carro final."
+            },
+            { 
+                term: "Bloque", 
+                icon: "fa-cubes",
+                def: "En el diseño CAD, un bloque es un conjunto de líneas, arcos y geometrías agrupadas que se comportan como un solo objeto. Se utilizan para elementos repetitivos como tornillos, puertas o componentes electrónicos. Al usar bloques, si modificas el original, todos los bloques copiados se actualizan automáticamente, ahorrando mucho tiempo.", 
+                img: "https://images.unsplash.com/photo-1611996575749-79a3a250f948?auto=format&fit=crop&w=600&q=80",
+                caption: "Librería de componentes digitales.",
+                tip: "Crea bloques para piezas que uses más de dos veces en un diseño.",
+                challenge: "Imagina un bloque 'rueda'. ¿Cuántas veces lo usarías en el plano de un coche?",
+                tech: "Los bloques reducen el peso del archivo informático.",
+                real: "En arquitectura, se insertan bloques de muebles para no dibujar cada silla una por una."
+            },
+            { 
+                term: "CAD", 
+                icon: "fa-laptop-code",
+                def: "Siglas de 'Computer-Aided Design' (Diseño Asistido por Computadora). Es el uso de software especializado (como AutoCAD, SolidWorks, Fusion 360) para crear, modificar, analizar y optimizar diseños. Reemplazó al dibujo manual en tableros, permitiendo mayor precisión, edición rápida y modelado en 3D.", 
+                img: "https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&w=600&q=80",
+                caption: "Ingeniero trabajando en estación CAD.",
+                tip: "Aprender atajos de teclado en CAD te hará el doble de rápido.",
+                challenge: "Investiga qué software CAD es gratuito para estudiantes.",
+                tech: "El CAD permite 'parametrizar', es decir, cambiar medidas escribiendo números.",
+                real: "Todo lo que usas, desde tu cepillo de dientes hasta un avión, fue diseñado en CAD."
+            },
+            { 
+                term: "Cadena de cotas", 
+                icon: "fa-ruler-horizontal",
+                def: "Es una secuencia de medidas (cotas) colocadas una a continuación de la otra en un plano técnico. Sirve para describir las dimensiones de una pieza por tramos. Sin embargo, hay que tener cuidado con la 'acumulación de errores', ya que la tolerancia de cada medida se suma a la siguiente.", 
+                img: "https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=600&q=80",
+                caption: "Acotación lineal en plano técnico.",
+                tip: "A veces es mejor usar cotas desde un punto base común (en paralelo) para evitar errores.",
+                challenge: "Dibuja una escalera y pon las medidas de cada escalón en cadena.",
+                tech: "Las normas de dibujo prohíben cruzar líneas de cota entre sí.",
+                real: "Un error en una cadena de cotas puede hacer que el último agujero de una pieza no coincida."
+            },
+            { 
+                term: "CAE", 
+                icon: "fa-microchip",
+                def: "Siglas de 'Computer-Aided Engineering' (Ingeniería Asistida por Computadora). Es el uso de software para simular y analizar cómo se comportará un diseño bajo condiciones físicas reales (fuerza, calor, fluidos) antes de fabricarlo. Permite detectar fallas sin gastar material.", 
+                img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=600&q=80",
+                caption: "Simulación de estrés térmico.",
+                tip: "El CAE te dice si una pieza se romperá antes de que la construyas.",
+                challenge: "¿Qué pasaría si simulas 1000 kg sobre una silla de plástico en CAE?",
+                tech: "Utiliza el método de 'Elementos Finitos' (FEM) para los cálculos matemáticos.",
+                real: "Las pruebas de choque de los autos (crash test) se hacen primero en CAE."
+            },
+            { 
+                term: "CAM", 
+                icon: "fa-robot",
+                def: "Siglas de 'Computer-Aided Manufacturing' (Manufactura Asistida por Computadora). Es el software que toma el diseño CAD y lo traduce a código que las máquinas herramientas (como fresadoras CNC, tornos o impresoras 3D) pueden entender para fabricar la pieza automáticamente.", 
+                img: "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?auto=format&fit=crop&w=600&q=80",
+                caption: "Fresadora CNC operando.",
+                tip: "El CAM define la ruta que seguirá la herramienta de corte.",
+                challenge: "Imagina que eres el CAM: escribe los pasos para cortar un cuadrado en papel.",
+                tech: "El lenguaje más común que genera el CAM se llama 'Código G'.",
+                real: "Sin CAM, tendríamos que mover las palancas de las máquinas manualmente, lo cual es lento e impreciso."
+            },
+            { 
+                term: "Corte", 
+                icon: "fa-cut",
+                def: "Representación gráfica en un plano donde se 'rebanada' imaginariamente una pieza para mostrar su interior. Es fundamental para ver agujeros, grosores de pared y detalles internos que quedarían ocultos en una vista normal. Se indica con una línea de corte y un patrón de rayado (achurado).", 
+                img: "https://images.unsplash.com/photo-1596495577886-d920f1fb7238?auto=format&fit=crop&w=600&q=80",
+                caption: "Sección transversal de un motor.",
+                tip: "El rayado siempre va a 45 grados en las zonas donde pasó el 'cuchillo' imaginario.",
+                challenge: "Dibuja una manzana partida por la mitad. Eso es un corte.",
+                tech: "Existen cortes totales, medios cortes y cortes escalonados.",
+                real: "Los médicos usan 'cortes' todo el tiempo en las tomografías (TAC) para ver el cuerpo humano."
+            },
+            { 
+                term: "Despiece", 
+                icon: "fa-puzzle-piece",
+                def: "Es la representación detallada e individual de todas las piezas que componen un ensamblaje o máquina. En un plano de despiece, cada tornillo, tuerca y eje se dibuja por separado con sus propias dimensiones y especificaciones, listo para ser fabricado.", 
+                img: "https://images.unsplash.com/photo-1626156972076-24dc1c183d3e?auto=format&fit=crop&w=600&q=80",
+                caption: "Componentes separados listos para ensamble.",
+                tip: "Un buen despiece incluye una lista de materiales (BOM) numerada.",
+                challenge: "Desarma un bolígrafo y dibuja cada parte por separado.",
+                tech: "Es la guía definitiva para el operario que fabrica las partes.",
+                real: "Las instrucciones de LEGO son esencialmente una secuencia de despieces y ensamblajes."
+            },
+            { 
+                term: "Diagrama de flujo", 
+                icon: "fa-project-diagram",
+                def: "Representación gráfica de un proceso, algoritmo o flujo de trabajo. Utiliza figuras geométricas estándar (rombos para decisiones, rectángulos para acciones) conectadas por flechas para mostrar la secuencia lógica de pasos a seguir para resolver un problema o completar una tarea.", 
+                img: "https://images.unsplash.com/photo-1542626991-cbc4e32524cc?auto=format&fit=crop&w=600&q=80",
+                caption: "Lógica de procesos en pizarra.",
+                tip: "Si no puedes explicar tu proceso en un diagrama, es que no lo entiendes bien.",
+                challenge: "Haz un diagrama de flujo de cómo lavarse los dientes.",
+                tech: "Es el paso previo obligatorio antes de escribir código de programación.",
+                real: "Los ingenieros industriales usan esto para optimizar líneas de producción."
+            },
+            { 
+                term: "Dimensión", 
+                icon: "fa-ruler-combined",
+                def: "Es la medida numérica de una característica física de una pieza, como su longitud, ancho, altura, radio o diámetro. En los planos, las dimensiones se expresan en unidades específicas (milímetros, pulgadas) y definen el tamaño exacto del objeto.", 
+                img: "https://images.unsplash.com/photo-1581092335397-9583eb92d232?auto=format&fit=crop&w=600&q=80",
+                caption: "Medición con calibrador vernier.",
+                tip: "En ingeniería mecánica, la unidad estándar suele ser el milímetro (mm).",
+                challenge: "Mide el largo de tu mesa. Esa es una dimensión.",
+                tech: "Existen dimensiones funcionales (críticas) y auxiliares (informativas).",
+                real: "Confundir pulgadas con milímetros causó la pérdida de la sonda Mars Climate Orbiter."
+            },
+            { 
+                term: "Escala", 
+                icon: "fa-compress-arrows-alt",
+                def: "Es la relación matemática entre las dimensiones del dibujo en el papel (o pantalla) y las dimensiones reales del objeto físico. Permite dibujar objetos enormes (como edificios) en una hoja pequeña (Reducción) o objetos diminutos (como chips) en un tamaño visible (Ampliación).", 
+                img: "https://images.unsplash.com/photo-1564182842519-8a3b2af3e228?auto=format&fit=crop&w=600&q=80",
+                caption: "Planos de arquitectura a escala.",
+                tip: "Escala 1:1 significa tamaño real. 1:100 reduce 100 veces. 10:1 amplía 10 veces.",
+                challenge: "Si dibujas a escala 1:2, ¿cuánto medirá en el papel una línea de 10 cm?",
+                tech: "La escala debe indicarse siempre en el cuadro de rotulación del plano.",
+                real: "Los mapas son el ejemplo más común de escala de reducción masiva."
+            },
+            { 
+                term: "Eje", 
+                icon: "fa-arrows-alt-h",
+                def: "Línea recta imaginaria o física alrededor de la cual una pieza puede rotar (como las ruedas de un auto) o que sirve de centro de simetría para alinear componentes. En dibujo técnico, se representa con una línea de trazo y punto.", 
+                img: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=600&q=80",
+                caption: "Ejes de transmisión mecánica.",
+                tip: "Siempre dibuja los ejes primero para centrar tu diseño.",
+                challenge: "Identifica 3 ejes en una bicicleta.",
+                tech: "En sistemas de coordenadas, hablamos de ejes X, Y, Z.",
+                real: "El eje de la Tierra es la línea imaginaria sobre la cual rota nuestro planeta."
+            },
+            { 
+                term: "Isométrico", 
+                icon: "fa-cube",
+                def: "Tipo de dibujo en perspectiva que muestra las tres dimensiones de un objeto (alto, ancho y profundo) en un plano 2D. Su característica principal es que los tres ejes principales forman ángulos iguales de 120° entre sí, manteniendo las proporciones reales sin la distorsión de la perspectiva artística.", 
+                img: "https://images.unsplash.com/photo-1580974852861-c381510bc98a?auto=format&fit=crop&w=600&q=80",
+                caption: "Dibujo isométrico de tuberías.",
+                tip: "En isométrico, las líneas verticales siguen verticales, pero las horizontales se dibujan a 30°.",
+                challenge: "Intenta dibujar un cubo isométrico en una hoja cuadriculada.",
+                tech: "Es la vista favorita en manuales de instrucciones (como los de IKEA).",
+                real: "Muchos videojuegos antiguos usaban vista isométrica para simular 3D."
+            },
+            { 
+                term: "Maqueta", 
+                icon: "fa-shapes",
+                def: "Modelo físico a escala, generalmente no funcional, utilizado para estudiar aspectos volumétricos, estéticos o de distribución espacial del diseño antes de la producción. Se diferencia del prototipo en que la maqueta prioriza la apariencia sobre la función.", 
+                img: "https://images.unsplash.com/photo-1493119508027-2b584f693724?auto=format&fit=crop&w=600&q=80",
+                caption: "Maqueta arquitectónica detallada.",
+                tip: "Materiales comunes: cartón paja, madera balsa, espuma.",
+                challenge: "Haz una maqueta de tu habitación con cajas de cartón.",
+                tech: "Ayuda a entender la escala humana frente al objeto.",
+                real: "Los cineastas usan maquetas para planear escenas antes de filmar."
+            },
+            { 
+                term: "Modelado 3D", 
+                icon: "fa-cubes",
+                def: "Proceso de creación de representaciones matemáticas tridimensionales de objetos inanimados o vivos a través de software especializado. El modelo 3D permite ver el objeto desde cualquier ángulo, aplicarle texturas y usarlo para animación, simulación o impresión 3D.", 
+                img: "https://images.unsplash.com/photo-1616012674251-872f2e519e68?auto=format&fit=crop&w=600&q=80",
+                caption: "Esculpido digital de personajes.",
+                tip: "Empieza modelando formas básicas (primitivas) como cubos y esferas.",
+                challenge: "Busca 'Tinkercad' y modela un llavero con tu nombre.",
+                tech: "Puede ser por superficies (solo la cáscara) o sólidos (relleno virtual).",
+                real: "Las películas de Pixar son puro modelado 3D."
+            },
+            { 
+                term: "Plano de conjunto", 
+                icon: "fa-map",
+                def: "Dibujo técnico que muestra cómo se ensamblan e interactúan todas las piezas de un sistema completo. No suele llevar cotas de fabricación de cada pieza, sino cotas generales y listados de componentes para entender el montaje final.", 
+                img: "https://images.unsplash.com/photo-1596496181938-9b8841a02792?auto=format&fit=crop&w=600&q=80",
+                caption: "Plano general de una máquina.",
+                tip: "Es como la foto de la caja del rompecabezas: te muestra el resultado final.",
+                challenge: "Observa un ventilador. Un plano de conjunto mostraría cómo la hélice se une al motor y a la base.",
+                tech: "Utiliza 'balones' o números encerrados en círculos para identificar cada parte.",
+                real: "Imprescindible para el equipo de mantenimiento que debe reparar la máquina."
+            },
+            { 
+                term: "Plano de fabricación", 
+                icon: "fa-drafting-compass",
+                def: "Documento técnico definitivo que contiene TODA la información necesaria para producir una pieza: vistas, cortes, dimensiones, tolerancias, materiales y tratamientos superficiales. Es la 'orden' que recibe el operario para construir el objeto sin necesidad de preguntar nada al diseñador.", 
+                img: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=600&q=80",
+                caption: "Ingeniero revisando planos en taller.",
+                tip: "Si falta una medida, el plano de fabricación está incompleto.",
+                challenge: "¿Qué información necesita un carpintero para hacer una pata de mesa? Escríbela.",
+                tech: "Debe ser limpio y seguir normas estrictas para evitar interpretaciones erróneas.",
+                real: "Es un contrato legal: si la pieza sale mal pero cumple el plano, la culpa es del diseñador."
+            },
+            { 
+                term: "Precisión", 
+                icon: "fa-crosshairs",
+                def: "Grado de exactitud y repetibilidad con el que se fabrican las piezas mecánicas o se toman medidas. Una máquina precisa puede fabricar 1000 piezas idénticas con diferencias microscópicas entre ellas. Es clave para la intercambiabilidad de partes.", 
+                img: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=600&q=80",
+                caption: "Instrumentos de medición de alta precisión.",
+                tip: "Precisión no es lo mismo que exactitud (dar en el blanco), sino agrupar los disparos.",
+                challenge: "Intenta cortar 3 tiras de papel de exactamente 50mm. ¿Son idénticas?",
+                tech: "Se mide en micras (milésimas de milímetro) en la industria metalmecánica.",
+                real: "Los relojes suizos son famosos por su extrema precisión mecánica."
+            },
+            { 
+                term: "Prototipo", 
+                icon: "fa-flask",
+                def: "Modelo funcional preliminar de un diseño utilizado para pruebas y evaluación antes de la producción en masa. A diferencia de la maqueta, el prototipo SÍ funciona. Sirve para validar si la mecánica, la electrónica y la ergonomía son correctas.", 
+                img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80",
+                caption: "Prototipo de robot en pruebas.",
+                tip: "Falla rápido y barato con prototipos para no fallar caro en el producto final.",
+                challenge: "Haz un prototipo de un avión de papel. ¿Vuela bien? Modifícalo.",
+                tech: "Existen prototipos alfa (laboratorio) y beta (usuarios reales).",
+                real: "SpaceX explotó muchos prototipos de cohetes antes de lograr aterrizarlos."
+            },
+            { 
+                term: "Simetría", 
+                icon: "fa-balance-scale",
+                def: "Propiedad geométrica de un objeto de ser idéntico en ambos lados de un plano o eje central. En ingeniería, diseñar piezas simétricas facilita la fabricación, el equilibrio de pesos y el ensamblaje, ya que no importa si se montan de un lado o del otro.", 
+                img: "https://images.unsplash.com/photo-1585806682705-72863955e69e?auto=format&fit=crop&w=600&q=80",
+                caption: "Estructura simétrica de un puente.",
+                tip: "En CAD, diseña la mitad y usa la herramienta 'Espejo' (Mirror).",
+                challenge: "Dibuja una mariposa. Es un ejemplo clásico de simetría.",
+                tech: "Reduce el tiempo de dibujo y cálculo a la mitad.",
+                real: "Los aviones son simétricos para mantener la estabilidad en el aire."
+            },
+            { 
+                term: "Simulación", 
+                icon: "fa-desktop",
+                def: "Uso de modelos computacionales avanzados para replicar virtualmente el comportamiento de un diseño bajo diversas condiciones del mundo real (gravedad, viento, calor, impacto). Permite predecir el futuro del objeto sin haberlo construido.", 
+                img: "https://images.unsplash.com/photo-1576442491103-671c6dc0011c?auto=format&fit=crop&w=600&q=80",
+                caption: "Simulación de fluidos por computadora.",
+                tip: "Una simulación es tan buena como los datos que le ingreses.",
+                challenge: "Los videojuegos de carreras son simulaciones de física simplificadas.",
+                tech: "Ahorra millones de dólares en materiales destruidos.",
+                real: "Los pilotos entrenan en simuladores de vuelo antes de tocar un avión real."
+            },
+            { 
+                term: "Renderizado", 
+                icon: "fa-image",
+                def: "Proceso digital de generar una imagen fotorrealista a partir de un modelo 3D. El software calcula cómo rebota la luz, las sombras, los reflejos y las texturas de los materiales para que el objeto parezca una fotografía real, aunque solo exista en el computador.", 
+                img: "https://images.unsplash.com/photo-1622643048696-29177651c6c8?auto=format&fit=crop&w=600&q=80",
+                caption: "Render fotorrealista de interiorismo.",
+                tip: "Un buen render necesita buena iluminación, no solo buen modelado.",
+                challenge: "Busca 'Render vs Realidad' en Google.",
+                tech: "Requiere tarjetas gráficas potentes para calcular los rayos de luz.",
+                real: "La mayoría de los autos en los anuncios de TV son renders, no autos reales."
+            },
+            { 
+                term: "Tolerancia", 
+                icon: "fa-exclamation-circle",
+                def: "Es el margen de error o variación permitido en las dimensiones de una pieza fabricada. Como la perfección absoluta no existe, la ingeniería define un rango (ej. +/- 0.1 mm) dentro del cual la pieza sigue siendo aceptable y funcional. Tolerancias muy estrictas son más caras de producir.", 
+                img: "https://images.unsplash.com/photo-1563287680-e59df18c5c7d?auto=format&fit=crop&w=600&q=80",
+                caption: "Control de calidad y tolerancias.",
+                tip: "Diseña con la tolerancia más amplia posible que permita que funcione.",
+                challenge: "¿Encajaría una pieza de 10.5mm en un hueco de 10.4mm? Eso es tolerancia.",
+                tech: "Se definen en las normas ISO 286.",
+                real: "Si las piezas de un motor tuvieran mala tolerancia, vibraría hasta romperse."
+            },
+            { 
+                term: "Vista", 
+                icon: "fa-eye",
+                def: "Representación bidimensional de un objeto tridimensional observada desde una dirección específica y perpendicular (ortogonal). Las vistas principales estándar son: Alzado (frente), Planta (arriba) y Perfil (lado). Juntas definen completamente la forma del objeto.", 
+                img: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=600&q=80",
+                caption: "Vistas múltiples de una pieza.",
+                tip: "Imagina que el objeto flota dentro de una caja de cristal y dibujas lo que ves en cada cara.",
+                challenge: "Mira un zapato desde arriba. Esa es la vista de Planta.",
+                tech: "La disposición de las vistas cambia según si usas norma Americana o Europea.",
+                real: "Es la base fundamental del dibujo técnico desde hace siglos."
+            },
+            { 
+                term: "Vista explosionada", 
+                icon: "fa-bomb",
+                def: "Representación gráfica de un ensamblaje en la que los componentes se dibujan separados unos de otros, pero manteniendo su alineación y orden de montaje. Parece como si el objeto hubiera explotado congelándose en el tiempo. Es ideal para mostrar cómo se arman las cosas.", 
+                img: "https://images.unsplash.com/photo-1596495577886-d920f1fb7238?auto=format&fit=crop&w=600&q=80",
+                caption: "Vista explosionada de mecanismo.",
+                tip: "Se usan líneas de trazos para indicar la ruta de ensamblaje.",
+                challenge: "Busca la vista explosionada de un control de Xbox.",
+                tech: "Facilita enormemente la comprensión de mecanismos complejos.",
+                real: "Los manuales de reparación de autos están llenos de estas vistas."
+            }
+        ];
+
+        // LOGICA DEL SISTEMA (IDÉNTICA AL MODULO ANTERIOR)
+        const viewed = new Set();
+        const menuContainer = document.getElementById('menu-list');
+        const displayArea = document.getElementById('definition-display');
+        const countSpan = document.getElementById('count');
+        const progressFill = document.getElementById('progress-fill');
+        const finishBtn = document.getElementById('btn-finish');
+
+        function renderMenu(filter = "") {
+            menuContainer.innerHTML = "";
+            glossaryData.forEach((item, index) => {
+                if (item.term.toLowerCase().includes(filter.toLowerCase())) {
+                    const div = document.createElement('div');
+                    div.className = `menu-item ${viewed.has(index) ? 'viewed' : ''}`;
+                    div.innerHTML = `<i class="fas ${item.icon}"></i> ${item.term}`;
+                    if (viewed.has(index)) div.style.color = "var(--sena-green)";
+                    
+                    div.onclick = () => showDefinition(index, div);
+                    menuContainer.appendChild(div);
+                }
+            });
+        }
+
+        function showDefinition(index, element) {
+            const data = glossaryData[index];
+            
+            // Marcar como visto
+            viewed.add(index);
+            updateProgress();
+            
+            // Actualizar estilo del menú
+            const items = document.querySelectorAll('.menu-item');
+            items.forEach(i => i.classList.remove('active'));
+            element.classList.add('active');
+            element.style.color = "white"; // Force white text on active
+
+            // Renderizar contenido
+            displayArea.innerHTML = `
+                <h2 class="term-title">${data.term}</h2>
+                <div class="def-layout">
+                    <div class="def-text-side">
+                        <p>${data.def}</p>
+                        
+                        <div class="cards-grid">
+                            <div class="info-card card-tip">
+                                <h4><i class="fas fa-lightbulb"></i> Tip Maker</h4>
+                                ${data.tip}
+                            </div>
+                            <div class="info-card card-challenge">
+                                <h4><i class="fas fa-rocket"></i> Reto Rápido</h4>
+                                ${data.challenge}
+                            </div>
+                            <div class="info-card card-tech">
+                                <h4><i class="fas fa-cog"></i> Dato Técnico</h4>
+                                ${data.tech}
+                            </div>
+                            <div class="info-card card-real">
+                                <h4><i class="fas fa-globe-americas"></i> En la Vida Real</h4>
+                                ${data.real}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="def-image-side">
+                        <img src="${data.img}" alt="${data.term}">
+                        <p class="image-caption">${data.caption}</p>
+                    </div>
+                </div>
+            `;
+
+            // Reiniciar animación
+            displayArea.style.animation = 'none';
+            displayArea.offsetHeight; /* trigger reflow */
+            displayArea.style.animation = 'fadeIn 0.4s ease-out';
+        }
+
+        function updateProgress() {
+            const total = glossaryData.length;
+            const current = viewed.size;
+            
+            countSpan.innerText = current;
+            const percentage = (current / total) * 100;
+            progressFill.style.width = percentage + "%";
+
+            if (current === total) {
+                finishBtn.classList.add('ready');
+                finishBtn.removeAttribute('disabled');
+            }
+        }
+
+        function filterMenu(value) {
+            renderMenu(value);
+        }
+
+        function finishModule() {
+    // Verificamos si ya vio todos los términos
+    if (viewed.size === glossaryData.length) {
+        const storageKey = 'makerCourseState'; 
+        const savedState = localStorage.getItem(storageKey);
+        
+        // Lógica de guardado en LocalStorage
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            if (!state.completedModules.includes(8)) {
+                state.completedModules.push(8);
+            }
+            localStorage.setItem(storageKey, JSON.stringify(state));
+        }
+        
+        // --- AQUÍ ESTÁ EL CAMBIO PARA LA ANIMACIÓN ---
+        const modal = document.getElementById('congrats-modal');
+        const content = document.getElementById('congrats-content');
+        
+        // Mostramos el contenedor (está oculto por defecto con display: none)
+        modal.style.display = 'flex';
+        
+        // Usamos un pequeño delay para que el navegador registre el cambio de display
+        // y pueda ejecutar la transición de opacidad y escala
+        setTimeout(() => {
+            modal.style.opacity = '1';
+            content.style.transform = 'scale(1)';
+        }, 50);
+        
+        // Eliminamos el window.location de aquí para que no se cierre solo
+    } else {
+        // Opcional: un aviso por si intentan dar clic antes de terminar
+        alert("Aún no has leído todos los términos del glosario.");
+    }
+}
+
+        // Inicializar
+        renderMenu();
+    </script>
+
+</body>
+</html>

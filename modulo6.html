@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 6: Transferencia - Proto Party</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ESTILOS GLOBALES ESTANDARIZADOS */
+        :root { 
+            --sena-green: #39A900; 
+            --sena-blue: #00324D; 
+            --sena-orange: #FF6C00; 
+            --bg-body: #F4F6F9; 
+            --bg-card: #FFFFFF; 
+            --text-gray: #59667a; 
+            --shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            --radius: 12px; 
+            --menu-width: 300px; 
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-body); color: var(--sena-blue); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* HEADER */
+        header { 
+            background-color: var(--bg-card); 
+            padding: 1rem 2rem; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            z-index: 100; 
+            position: sticky; 
+            top: 0; 
+        }
+        .header-title {
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1.7px;
+            font-size: 0.9rem;
+            color: var(--sena-blue);
+            text-align: center;
+            flex-grow: 1;
+        }
+
+
+.header-left {
+    display: flex;         /* Alinea hijos en horizontal */
+    align-items: center;   /* Centra verticalmente el logo y el botón */
+    gap: 20px;            /* Espacio de separación entre el logo y el botón */
+}
+        .back-btn { text-decoration: none; color: var(--sena-blue); font-weight: bold; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
+        .back-btn:hover { color: var(--sena-orange); }
+
+        /* LAYOUT */
+        .main-layout { display: flex; flex: 1; max-width: 1400px; margin: 2rem auto; gap: 2rem; width: 100%; padding: 0 20px; }
+        .sidebar { width: var(--menu-width); background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; height: fit-content; position: sticky; top: 6rem; }
+        .sidebar h3 { font-family: 'Montserrat'; color: var(--sena-green); margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        /* MENU ITEMS CON ICONOS */
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; transition: all 0.3s; color: var(--text-gray); font-weight: 500; position: relative; }
+        .menu-item img { width: 25px; height: auto; transition: transform 0.3s; }
+        .menu-item:hover { background: #f0fdf4; color: var(--sena-green); }
+        .menu-item:hover img { transform: scale(1.1); }
+        .menu-item.active { background: var(--sena-green); color: white; box-shadow: 0 4px 10px rgba(57, 169, 0, 0.3); }
+        .menu-item.completed::after { content: '\f00c'; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; right: 15px; color: var(--sena-green); }
+        .menu-item.active.completed::after { color: white; }
+
+        /* BARRA DE PROGRESO EN SIDEBAR */
+        .progress-container { margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
+        .progress-label { font-size: 0.8rem; color: var(--text-gray); margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .progress-bar-bg { width: 100%; height: 10px; background: #eee; border-radius: 5px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: var(--sena-orange); width: 0%; transition: width 0.5s ease; }
+
+        /* CONTENIDO */
+        .content-area { flex: 1; background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2.5rem; min-height: 600px; position: relative; }
+        .activity-section { display: none; animation: fadeIn 0.5s ease; }
+        .activity-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .section-header { margin-bottom: 2rem; }
+        .section-header h2 { font-family: 'Montserrat'; color: var(--sena-blue); font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .section-header p { color: var(--text-gray); }
+        
+        /* BOTONES DE NAVEGACIÓN */
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 3rem; border-top: 1px solid #eee; padding-top: 2rem; }
+        .btn-nav { padding: 10px 25px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+        .btn-prev { background: #e0e0e0; color: var(--text-gray); }
+        .btn-next { background: var(--sena-blue); color: white; }
+        .btn-next:hover { background: var(--sena-orange); }
+
+        /* COMPONENTES ESPECÍFICOS */
+        .info-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; align-items: center; margin-bottom: 2rem; }
+        .info-card-detail { background: #f8fafc; padding: 20px; border-radius: 10px; border-left: 4px solid var(--sena-green); }
+        .btn-download { background: var(--sena-orange); color: white; text-decoration: none; padding: 12px 25px; border-radius: 50px; display: inline-flex; align-items: center; gap: 10px; font-weight: bold; margin-top: 20px; box-shadow: 0 4px 0 #d85b00; transition: transform 0.2s; }
+        .btn-download:active { transform: translateY(2px); box-shadow: 0 1px 0 #d85b00; }
+
+        /* TARJETAS DE SEGURIDAD */
+        .safety-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 1rem; }
+        .safety-card { background: white; border: 1px solid #eee; border-radius: 10px; padding: 20px; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
+        .safety-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .safety-icon { font-size: 2.5rem; margin-bottom: 15px; display: block; }
+        .safety-warning .safety-icon { color: #fbc02d; }
+        .safety-forbidden .safety-icon { color: #d32f2f; }
+        .safety-obligatory .safety-icon { color: #1976d2; }
+        
+        /* LISTA RECOMENDACIONES */
+        .rec-list { list-style: none; }
+        .rec-item { display: flex; align-items: flex-start; gap: 15px; background: #fff; border: 1px solid #eee; padding: 15px; margin-bottom: 10px; border-radius: 8px; transition: 0.2s; }
+        .rec-item:hover { background: #f0fdf4; border-color: var(--sena-green); }
+        .rec-icon { min-width: 40px; height: 40px; background: var(--sena-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+
+        /* PROTO PARTY PIECES */
+        .pieces-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-top: 20px; }
+        .piece-card { border: 2px solid #eee; border-radius: 10px; padding: 10px; text-align: center; background: white; }
+        .piece-card img { max-width: 100%; height: auto; border-radius: 5px; }
+        .piece-card h4 { color: var(--sena-blue); margin: 10px 0 5px; }
+        
+        /* CHAT REFLEXIÓN */
+        .chat-container { background: #f1f1f1; padding: 20px; border-radius: 15px; margin-top: 20px; max-height: 400px; overflow-y: auto; }
+        .chat-bubble { padding: 10px 15px; border-radius: 15px; margin-bottom: 10px; max-width: 80%; }
+        .bot-bubble { background: white; color: var(--sena-blue); border-top-left-radius: 0; align-self: flex-start; }
+        .user-bubble { background: var(--sena-green); color: white; border-top-right-radius: 0; margin-left: auto; text-align: right; display: block; width: fit-content; }
+        .chat-input-area { display: flex; gap: 10px; margin-top: 10px; }
+        .chat-input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ccc; }
+
+        /* JUEGO MATCH */
+        .match-game-container { display: flex; flex-direction: column; gap: 20px; margin-top: 20px; }
+        .match-row { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px; border: 1px solid #eee; }
+        .term-box, .def-box { padding: 15px; background: white; border: 2px solid var(--sena-blue); border-radius: 8px; width: 45%; cursor: pointer; transition: 0.3s; text-align: center; font-weight: bold; }
+        .term-box:hover, .def-box:hover { background: #e3f2fd; }
+        .selected { background: var(--sena-orange) !important; color: white; border-color: var(--sena-orange); }
+        .matched { background: var(--sena-green) !important; color: white; border-color: var(--sena-green); opacity: 0.6; pointer-events: none; }
+
+        /* OVERLAY CELEBRACION */
+        #celebration-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 50, 77, 0.98);
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 2000; color: white; text-align: center; padding: 20px;
+        }
+        .badge-anim { 
+            width: 300px; max-width: 80vw;
+            animation: pulseBadge 2s infinite ease-in-out; 
+            margin-bottom: 30px; 
+            filter: drop-shadow(0 0 20px rgba(255, 60, 0, 0.6));
+        }
+        @keyframes pulseBadge {
+            0% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(255, 60, 0, 0.4)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 40px rgba(255, 60, 0, 0.8)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(255, 60, 0, 0.4)); }
+        }
+
+        @media (max-width: 768px) { .main-layout { flex-direction: column; } .sidebar { width: 100%; position: static; } .info-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <header>
+    <div class="header-left">
+        <img src="imagenes/Logos/sena.png" alt="Logo SENA" style="height: 45px; width: auto;">
+        
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Volver al Centro de Comando
+        </a>
+    </div>
+    
+    <div class="header-title">Módulo 6: TRANSFERENCIA</div>
+
+    <img src="imagenes/Logos/tecnoacademia.jpeg" alt="Logo TecnoAcademia" style="height: 45px; width: auto;">
+</header>
+
+    <div class="main-layout">
+        <aside class="sidebar">
+            <h3><i class="fas fa-list-ul"></i> Ruta de Aprendizaje</h3>
+            
+            <div id="menu-1" class="menu-item active" onclick="goToSection(1)">
+                <img src="imagenes/Insignias/Pin STEAM+/Pin_S.png" alt="Icon S"> Portada & Misión
+            </div>
+            <div id="menu-2" class="menu-item" onclick="goToSection(2)">
+                <img src="imagenes/Insignias/Pin STEAM+/Pin_T.png" alt="Icon T"> Intro al Modelado
+            </div>
+            <div id="menu-3" class="menu-item" onclick="goToSection(3)">
+                <img src="imagenes/Insignias/Pin STEAM+/Pin_E.png" alt="Icon E"> El Caos en el Lab
+            </div>
+            <div id="menu-4" class="menu-item" onclick="goToSection(4)">
+                <img src="imagenes/Insignias/Pin STEAM+/Pin_A.png" alt="Icon A"> Seguridad
+            </div>
+            <div id="menu-5" class="menu-item" onclick="goToSection(5)">
+                <img src="imagenes/Insignias/Pin STEAM+/Pin_M.png" alt="Icon M"> Recomendaciones de Uso
+            </div>
+            <div id="menu-6" class="menu-item" onclick="goToSection(6)">
+                <img src="imagenes/Insignias/Pin STEAM+/Pin_S.png" alt="Icon S"> Reto: Proto Party
+            </div>
+            <div id="menu-7" class="menu-item" onclick="goToSection(7)">
+                <img src="imagenes/Insignias/Pin STEAM+/Pin_T.png" alt="Icon T"> Evaluación Final
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Progreso del Módulo</span>
+                    <span id="progress-text">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-bar"></div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content-area">
+
+            <div id="sec-1" class="activity-section active">
+                <div class="section-header">
+                    <h2><i class="fas fa-flag"></i> Proto Party: Modelado de Piezas Extraviadas</h2>
+                </div>
+                
+                <div class="info-grid">
+                    <div style="text-align: center;">
+                        <img src="imagenes/Personajes/tecnoBot/para talleres_Mesa de trabajo 1.png" alt="TecnoBot" style="max-width: 100%; animation: float 3s ease-in-out infinite;">
+                        <style>@keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }</style>
+                        <p style="font-style: italic; color: var(--sena-orange); margin-top: 10px;">"¡Hola Maker! Prepárate para reconstruir el futuro."</p>
+                    </div>
+                    <div>
+                        <div class="info-card-detail">
+                            <h3 style="color: var(--sena-blue); margin-bottom: 10px;">Ficha Técnica de la Misión</h3>
+                            <p><strong><i class="fas fa-bullseye"></i> Técnica:</strong> Planteamiento de desafíos.</p>
+                            <p><strong><i class="fas fa-clock"></i> Duración:</strong> 6 horas presenciales.</p>
+                            <p><strong><i class="fas fa-laptop-code"></i> Ambiente:</strong> Convencional, especializado o abierto.</p>
+                            <p><strong><i class="fas fa-tools"></i> Materiales:</strong> Proyector, computador, Software 3D (FreeCAD).</p>
+                            <p><strong><i class="fas fa-file-contract"></i> Evidencia:</strong> Modelado digital de piezas.</p>
+                            
+                            <a href="documentos/Anexos/Anexo_G2_Taller 6_Proto Party (Modelado digital de piezas extraviadas)..pdf" target="_blank" class="btn-download">
+                                <i class="fas fa-file-pdf"></i> Descargar Anexo del Taller
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn-nav btn-prev" disabled>Inicio</button>
+                    <button class="btn-nav btn-next" onclick="nextSection()">Comenzar <i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div id="sec-2" class="activity-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-lightbulb"></i> Contexto: Ingeniería Inversa y Prototipado</h2>
+                </div>
+                
+                <p>En el mundo de la ingeniería y el diseño industrial, el modelado digital no es solo "dibujar en 3D", es la creación de <strong>gemelos digitales</strong> que permiten predecir fallos y optimizar recursos.</p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 20px 0;">
+                    
+                    <div style="background: white; border: 1px solid #ddd; padding: 20px; border-radius: 10px; border-top: 4px solid var(--sena-orange);">
+                        <h4 style="color: var(--sena-orange); margin-bottom: 10px;"><i class="fas fa-microchip"></i> Ingeniería Inversa</h4>
+                        <p style="font-size: 0.9rem;">Es el proceso de obtener información técnica a partir de un producto terminado. Se estima que esta técnica reduce los tiempos de desarrollo en un <strong>40%</strong> al no tener que empezar desde cero.</p>
+                    </div>
+
+                    <div style="background: white; border: 1px solid #ddd; padding: 20px; border-radius: 10px; border-top: 4px solid var(--sena-green);">
+                        <h4 style="color: var(--sena-green); margin-bottom: 10px;"><i class="fas fa-ruler-combined"></i> Modelado Paramétrico</h4>
+                        <p style="font-size: 0.9rem;">Utilizado en <strong>FreeCAD</strong>, este método usa variables (dimensiones) para definir formas. Si cambias un dato, toda la pieza se actualiza automáticamente, evitando errores de rediseño.</p>
+                    </div>
+                </div>
+
+                <div style="background: #e3f2fd; padding: 25px; border-radius: 12px; border-left: 6px solid var(--sena-blue); margin-bottom: 25px;">
+                    <h4 style="color: var(--sena-blue); margin-bottom: 15px;">¿Por qué es vital esta habilidad en la Industria 4.0?</h4>
+                    <p>Como Makers, recrear objetos físicamente nos otorga súper poderes técnicos:</p>
+                    <ul style="margin-left: 25px; margin-top: 10px; list-style-type: none;">
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--sena-green);"></i> <strong>Ahorro de Costos:</strong> Un repuesto modelado e impreso puede costar hasta un 90% menos que la pieza original importada.</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--sena-green);"></i> <strong>Sostenibilidad:</strong> Prolongamos la vida útil de las máquinas al fabricar piezas que ya no se comercializan.</li>
+                        <li style="margin-bottom: 8px;"><i class="fas fa-check-circle" style="color: var(--sena-green);"></i> <strong>Optimización:</strong> Podemos mejorar el diseño original (hacerlo más ligero o resistente) antes de fabricarlo.</li>
+                    </ul>
+                </div>
+
+                <div style="background: #fff3e0; padding: 15px; border-radius: 10px; display: flex; align-items: center; gap: 15px;">
+                    <i class="fas fa-info-circle" style="font-size: 2rem; color: var(--sena-orange);"></i>
+                    <p style="font-size: 0.85rem; margin: 0;"><strong>Dato Maker:</strong> El formato <strong>.STEP</strong> es el estándar universal en modelado 3D profesional, permitiendo que tu diseño sea abierto en casi cualquier software del mundo.</p>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-nav btn-prev" onclick="prevSection()"><i class="fas fa-chevron-left"></i> Anterior</button>
+                    <button class="btn-nav btn-next" onclick="nextSection()">Siguiente <i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div id="sec-3" class="activity-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-exclamation-triangle"></i> ¡Alerta en el Laboratorio!</h2>
+                </div>
+                
+                <div style="display: flex; gap: 20px; align-items: flex-start; background: #fff3e0; padding: 20px; border-radius: 10px;">
+                    <img src="imagenes/Personajes/Maker/Maker Hombre NANO.png" alt="Avatar Maker Nano" style="height: 150px;">
+                    <div>
+                        <h3 style="color: var(--sena-orange);">Mensaje Entrante...</h3>
+                        <p>"¡Maker! Se ha desatado el caos dentro del laboratorio. Los archivos digitales originales se han corrompido y necesitamos fabricar repuestos urgentemente para que la línea de ensamblaje continúe. Tu misión es solucionar este caos: recrea las piezas basándote en los planos de supervivencia que hemos recuperado. ¡Confío en tus habilidades de diseño!"</p>
+                        <p style="font-size: 0.8rem; margin-top: 10px; color: #777;">Referencia técnica: Ortega, A. (2015). Normas de dibujo técnico.</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; text-align: center;">
+                    <h4>Referencia Visual Recuperada:</h4>
+                    <img src="imagenes/Otros/dibujoTecnico.png" alt="Ejemplo Dibujo Técnico" style="max-width: 80%; border: 1px solid #ddd; padding: 5px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-nav btn-prev" onclick="prevSection()"><i class="fas fa-chevron-left"></i> Anterior</button>
+                    <button class="btn-nav btn-next" onclick="nextSection()">Ir a Seguridad <i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div id="sec-4" class="activity-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-shield-alt"></i> Recomendaciones de Bioseguridad</h2>
+                    <p>Antes de empezar a modelar y medir, identifica los riesgos del entorno.</p>
+                </div>
+
+                <h3 style="color: #fbc02d; margin-top: 20px;">1. Advertencias de Peligro</h3>
+                <div class="safety-grid">
+                    <div class="safety-card safety-warning">
+                        <i class="fas fa-bolt safety-icon"></i>
+                        <h4>Riesgo Eléctrico</h4>
+                        <p>Cuidado con cables de computadores y conexiones sueltas.</p>
+                    </div>
+                    <div class="safety-card safety-warning">
+                        <i class="fas fa-temperature-high safety-icon"></i>
+                        <h4>Alta Temperatura</h4>
+                        <p>Precaución cerca de impresoras 3D o equipos de termoformado.</p>
+                    </div>
+                    <div class="safety-card safety-warning">
+                        <i class="fas fa-cut safety-icon"></i>
+                        <h4>Elementos Afilados</h4>
+                        <p>Atención al manipular herramientas de corte o piezas con rebabas.</p>
+                    </div>
+                </div>
+
+                <h3 style="color: #d32f2f; margin-top: 30px;">2. Prohibiciones</h3>
+                <div class="safety-grid">
+                    <div class="safety-card safety-forbidden">
+                        <i class="fas fa-hamburger safety-icon"></i>
+                        <h4>Prohibido Comer</h4>
+                        <p>No alimentos ni bebidas cerca de los equipos de cómputo.</p>
+                    </div>
+                    <div class="safety-card safety-forbidden">
+                        <i class="fas fa-running safety-icon"></i>
+                        <h4>Prohibido Correr</h4>
+                        <p>Evita accidentes por caídas o empujones.</p>
+                    </div>
+                    <div class="safety-card safety-forbidden">
+                        <i class="fas fa-hand-paper safety-icon"></i>
+                        <h4>Prohibido Apoyarse</h4>
+                        <p>No te apoyes en maquinaria en movimiento o mesas inestables.</p>
+                    </div>
+                </div>
+
+                <h3 style="color: #1976d2; margin-top: 30px;">3. Señales de Obligación</h3>
+                <div class="safety-grid">
+                    <div class="safety-card safety-obligatory">
+                        <i class="fas fa-glasses safety-icon"></i>
+                        <h4>Protección Visual</h4>
+                        <p>Uso de gafas anti-salpicaduras en áreas de taller.</p>
+                    </div>
+                    <div class="safety-card safety-obligatory">
+                        <i class="fas fa-trash safety-icon"></i>
+                        <h4>Orden y Aseo</h4>
+                        <p>Obligatorio utilizar las papeleras de reciclaje.</p>
+                    </div>
+                    <div class="safety-card safety-obligatory">
+                        <i class="fas fa-power-off safety-icon"></i>
+                        <h4>Ahorro de Energía</h4>
+                        <p>Apagar pantallas y equipos cuando no se usen.</p>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-nav btn-prev" onclick="prevSection()"><i class="fas fa-chevron-left"></i> Anterior</button>
+                    <button class="btn-nav btn-next" onclick="nextSection()">Siguiente <i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div id="sec-5" class="activity-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-check-double"></i> Normas de Convivencia y Uso</h2>
+                </div>
+
+                <ul class="rec-list">
+                    <li class="rec-item">
+                        <div class="rec-icon"><i class="fas fa-laptop"></i></div>
+                        <div>
+                            <strong>Cuidado de Equipos:</strong> Hacer uso adecuado de los materiales y equipos de cómputo es fundamental para un entorno óptimo.
+                        </div>
+                    </li>
+                    <li class="rec-item">
+                        <div class="rec-icon"><i class="fas fa-chair"></i></div>
+                        <div>
+                            <strong>Ergonomía:</strong> Ajustar sillas y mantener postura adecuada previene molestias físicas durante el diseño.
+                        </div>
+                    </li>
+                    <li class="rec-item">
+                        <div class="rec-icon"><i class="fas fa-exclamation-circle"></i></div>
+                        <div>
+                            <strong>Seguridad Física:</strong> Prohibido correr en el ambiente de formación, podrías caer o dañar los equipos.
+                        </div>
+                    </li>
+                    <li class="rec-item">
+                        <div class="rec-icon"><i class="fas fa-eye"></i></div>
+                        <div>
+                            <strong>Salud Visual:</strong> Realizar pausas regulares al usar pantallas reduce el riesgo de fatiga visual.
+                        </div>
+                    </li>
+                    <li class="rec-item">
+                        <div class="rec-icon"><i class="fas fa-box-open"></i></div>
+                        <div>
+                            <strong>Orden:</strong> Organizar el espacio y asegurar que todo quede en su lugar facilita el trabajo del siguiente grupo.
+                        </div>
+                    </li>
+                    <li class="rec-item">
+                        <div class="rec-icon"><i class="fas fa-recycle"></i></div>
+                        <div>
+                            <strong>Residuos:</strong> Disposición adecuada de residuos según código de colores (Verde, Blanco, Negro).
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="nav-buttons">
+                    <button class="btn-nav btn-prev" onclick="prevSection()"><i class="fas fa-chevron-left"></i> Anterior</button>
+                    <button class="btn-nav btn-next" onclick="nextSection()">Ir al Reto Maker <i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div id="sec-6" class="activity-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-cubes"></i> Reto Maker: Proto Party</h2>
+                </div>
+
+                <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+                    <img src="imagenes/Personajes/TecnoBot/Anexo_TecnoAcademia.png" style="height: 100px;">
+                    <div style="background: #f0f4c3; padding: 15px; border-radius: 10px; width: 100%;">
+                         <div style="display:flex; align-items: center; gap: 10px;">
+                             <img src="imagenes/Personajes/Maker/Maker Mujer NANO.png" style="height: 60px; border-radius: 50%; background:white; padding:2px;">
+                             <strong>Misión Crítica:</strong>
+                         </div>
+                         <p style="margin-top:5px;">"¡Oh no Maker! Hemos encontrado un problema en el laberinto, se han perdido algunas de las piezas clave. Tenemos que modelar estas piezas digitalmente para poder seguir nuestro camino maker. ¡Manos a la obra!"</p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin: 20px 0;">
+                     <a href="documentos/Anexos/Anexo_G2_Taller 6_Proto Party (Modelado digital de piezas extraviadas)..pdf" target="_blank" class="btn-download" style="background: var(--sena-blue);">
+                        <i class="fas fa-file-download"></i> Abrir Guía de Piezas (PDF)
+                    </a>
+                </div>
+		<br>
+
+                <div class="info-grid" style="display: flex; justify-content: center; align-items: flex-start; gap: 3rem; flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 250px; max-width: 400px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <img src="imagenes/Personajes/Maker/Maker hombre CIENCIAS.png" style="height: 80px; width: auto;">
+            <h4 style="margin: 0;"><i class="fas fa-tools"></i> Materiales:</h4>
+        </div>
+        <ul style="list-style: none; padding: 0;">
+            <li>Computador con FreeCAD</li>
+            <li>Lápiz y Borrador</li>
+            <li>Hoja de Bocetos</li>
+        </ul>
+    </div>
+
+    <div style="flex: 1; min-width: 250px; max-width: 400px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+        <div style="display:flex; flex-direction: column; align-items:center; gap:10px; margin-bottom:10px;">
+             <img src="imagenes/Personajes/Maker/Maker Hombre ING Y DISEÑO.png" style="height: 80px;">
+             <h4>Procedimiento:</h4>
+        </div>
+        <ol style="text-align: left; display: inline-block;">
+            <li><strong>Observa</strong> la imagen de referencia.</li>
+            <li><strong>Identifica</strong> las cotas y medidas.</li>
+            <li><strong>Modela</strong> la pieza en el software 3D.</li>
+            <li><strong>Socializa</strong> tu resultado con el facilitador.</li>
+        </ol>
+    </div>
+</div>
+
+                <h3 style="margin-top:30px; border-bottom: 2px solid var(--sena-orange); display:inline-block;">Galería de Piezas a Recuperar</h3>
+                <div class="pieces-grid">
+                    <div class="piece-card">
+                        <img src="imagenes/Otros/pieza1.png" alt="Pieza 1">
+                        <h4>Pieza Alpha</h4>
+                        <p style="font-size: 0.8rem;">Base estructural.</p>
+                    </div>
+                    <div class="piece-card">
+                        <img src="imagenes/Otros/pieza2.png" alt="Pieza 2">
+                        <h4>Pieza Beta</h4>
+                        <p style="font-size: 0.8rem;">Soporte lateral.</p>
+                    </div>
+                    <div class="piece-card">
+                        <img src="imagenes/Otros/pieza3.png" alt="Pieza 3">
+                        <h4>Pieza Gamma</h4>
+                        <p style="font-size: 0.8rem;">Conector simple.</p>
+                    </div>
+                    <div class="piece-card">
+                        <img src="imagenes/Otros/pieza4.png" alt="Pieza 4">
+                        <h4>Pieza Delta</h4>
+                        <p style="font-size: 0.8rem;">Eje de rotación.</p>
+                    </div>
+                    <div class="piece-card">
+                        <img src="imagenes/Otros/pieza5.png" alt="Pieza 5">
+                        <h4>Pieza Epsilon</h4>
+                        <p style="font-size: 0.8rem;">Engranaje base.</p>
+                    </div>
+                    <div class="piece-card">
+                        <img src="imagenes/Otros/pieza6.png" alt="Pieza 6">
+                        <h4>Pieza Zeta</h4>
+                        <p style="font-size: 0.8rem;">Tapa superior.</p>
+                    </div>
+                </div>
+
+                <div class="chat-container">
+                    <h4><i class="fas fa-comments"></i> Reflexión Maker</h4>
+                    <div id="chat-history">
+                        <div class="chat-bubble bot-bubble">Hola Maker. ¿Qué fue lo primero que pensaste al ver que debías realizar estas piezas sin un paso a paso detallado?</div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="user-reflection" class="chat-input" placeholder="Escribe tu respuesta aquí...">
+                        <button class="btn-primary" onclick="submitReflection()" style="background: var(--sena-green); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-nav btn-prev" onclick="prevSection()"><i class="fas fa-chevron-left"></i> Anterior</button>
+                    <button class="btn-nav btn-next" onclick="nextSection()">Ir a Evaluación Final <i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div id="sec-7" class="activity-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-puzzle-piece"></i> Evaluación: Conecta los Conceptos</h2>
+                    <p>Demuestra lo que has aprendido conectando el término con su definición correcta.</p>
+                </div>
+
+                <div class="match-game-container" id="match-game">
+                    </div>
+
+                <div id="final-btn-container" style="display: none; text-align: center; margin-top: 30px;">
+                    <button class="btn-download" style="background: var(--sena-green); font-size: 1.2rem; padding: 15px 40px;" onclick="showCelebration()">
+                        <i class="fas fa-check-circle"></i> Finalizar Actividad
+                    </button>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-nav btn-prev" onclick="prevSection()"><i class="fas fa-chevron-left"></i> Anterior</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="celebration-overlay">
+        <h1 style="font-family: 'Montserrat'; font-size: 3rem; color: var(--sena-orange); margin-bottom: 20px; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">¡FELICITACIONES!</h1>
+        
+        <img src="imagenes/Insignias/Insignias Mohs/04 - Insignias MOHS-Rubí.png" class="badge-anim" alt="Insignia Rubí Ganada">
+        
+        <p style="font-size: 1.5rem; max-width: 700px; margin-bottom: 10px; font-weight: 300;">Has desbloqueado la <strong>Insignia Rubí</strong>.</p>
+        <p style="font-size: 1.1rem; color: #bdc3c7; margin-bottom: 30px;">Tu capacidad de modelado digital ha salvado el laboratorio.</p>
+        
+        <button class="btn-nav" style="background: white; color: var(--sena-blue); padding: 15px 30px;" onclick="finishModule()">
+            Volver al Centro de Comando <i class="fas fa-rocket"></i>
+        </button>
+    </div>
+
+    <script>
+        // --- VARIABLES DE ESTADO ---
+        let currentSection = 1;
+	let maxSectionReached = 1; // Nueva variable para rastrear el récord de avance
+        const totalSections = 7;
+        const storageKey = 'makerCourseState'; // Variable clave para el index
+        
+        // --- NAVEGACIÓN ---
+        function goToSection(secId) {
+            currentSection = secId;
+            updateUI();
+        }
+
+        function nextSection() {
+            if (currentSection < totalSections) {
+                currentSection++;
+                updateUI();
+            }
+        }
+
+        function prevSection() {
+            if (currentSection > 1) {
+                currentSection--;
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            // Actualizar Menú
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(`menu-${currentSection}`).classList.add('active');
+            
+            // Actualizar Secciones
+            document.querySelectorAll('.activity-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(`sec-${currentSection}`).classList.add('active');
+
+            // Scroll Top
+            window.scrollTo(0, 0);
+
+            // Actualizar Barra de Progreso
+            updateProgress();
+        }
+
+        function updateProgress() {
+    // 1. Actualizar el récord si el usuario avanza a una sección nueva
+    if (currentSection > maxSectionReached) {
+        maxSectionReached = currentSection;
+    }
+
+    // 2. Calcular progreso basado en el récord (maxSectionReached) y no en currentSection
+    const progress = Math.round(((maxSectionReached - 1) / (totalSections - 1)) * 100);
+    
+    document.getElementById('progress-bar').style.width = `${progress}%`;
+    document.getElementById('progress-text').innerText = `${progress}%`;
+    
+    // 3. Marcar items como completados basándose también en el récord
+    for(let i = 1; i < maxSectionReached; i++) {
+        const menuElement = document.getElementById(`menu-${i}`);
+        if (menuElement) {
+            menuElement.classList.add('completed');
+        }
+    }
+}
+
+        // --- REFLEXIÓN CHAT (SIMULACIÓN) ---
+        let reflectionStep = 0;
+        const botQuestions = [
+            "¿En qué fue lo primero que pensaste al ver que debías realizar estas piezas sin guía?",
+            "¿Qué tan importante crees que es el modelado digital en la industria actual?",
+            "¡Excelente reflexión! El modelado es el lenguaje de los ingenieros. ¡Sigue así!"
+        ];
+
+        function submitReflection() {
+            const input = document.getElementById('user-reflection');
+            const history = document.getElementById('chat-history');
+            const text = input.value.trim();
+
+            if (text === "") return;
+
+            // User msg
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-bubble user-bubble';
+            userMsg.innerText = text;
+            history.appendChild(userMsg);
+            input.value = "";
+
+            // Bot response delay
+            setTimeout(() => {
+                reflectionStep++;
+                const botMsg = document.createElement('div');
+                botMsg.className = 'chat-bubble bot-bubble';
+                
+                if (reflectionStep < botQuestions.length) {
+                    botMsg.innerText = botQuestions[reflectionStep];
+                } else {
+                    botMsg.innerText = "Has completado la reflexión. ¡Ve a la evaluación final!";
+                }
+                history.appendChild(botMsg);
+                history.scrollTop = history.scrollHeight;
+            }, 800);
+        }
+
+        // --- JUEGO DE MATCH ---
+        const terms = [
+            { id: 1, term: "Extrusión", def: "Crear volumen estirando una cara 2D." },
+            { id: 2, term: "Cota", def: "Indicación numérica de una medida en un plano." },
+            { id: 3, term: "Boceto", def: "Dibujo previo a mano alzada para planear." },
+            { id: 4, term: "STL", def: "Formato de archivo para impresión 3D." }
+        ];
+
+        let selectedTerm = null;
+        let selectedDef = null;
+        let matchesFound = 0;
+
+        function initGame() {
+            const container = document.getElementById('match-game');
+            // Mezclar
+            const shuffledDefs = [...terms].sort(() => Math.random() - 0.5);
+            
+            terms.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'match-row';
+                
+                // Columna Término
+                const tBox = document.createElement('div');
+                tBox.className = 'term-box';
+                tBox.innerText = item.term;
+                tBox.dataset.id = item.id;
+                tBox.onclick = () => selectTerm(tBox);
+                
+                // Columna Definición (Mezclada)
+                const dBox = document.createElement('div');
+                dBox.className = 'def-box';
+                dBox.innerText = shuffledDefs[index].def;
+                dBox.dataset.id = shuffledDefs[index].id;
+                dBox.onclick = () => selectDef(dBox);
+
+                row.appendChild(tBox);
+                row.appendChild(dBox);
+                container.appendChild(row);
+            });
+        }
+
+        function selectTerm(el) {
+            if (el.classList.contains('matched')) return;
+            if (selectedTerm) selectedTerm.classList.remove('selected');
+            selectedTerm = el;
+            el.classList.add('selected');
+            checkMatch();
+        }
+
+        function selectDef(el) {
+            if (el.classList.contains('matched')) return;
+            if (selectedDef) selectedDef.classList.remove('selected');
+            selectedDef = el;
+            el.classList.add('selected');
+            checkMatch();
+        }
+
+        function checkMatch() {
+            if (selectedTerm && selectedDef) {
+                if (selectedTerm.dataset.id === selectedDef.dataset.id) {
+                    // Match Correcto
+                    selectedTerm.classList.remove('selected');
+                    selectedDef.classList.remove('selected');
+                    selectedTerm.classList.add('matched');
+                    selectedDef.classList.add('matched');
+                    selectedTerm.style.background = "#39A900"; // Sena Green
+                    selectedDef.style.background = "#39A900";
+                    matchesFound++;
+                    selectedTerm = null;
+                    selectedDef = null;
+
+                    if (matchesFound === terms.length) {
+                        document.getElementById('final-btn-container').style.display = 'block';
+                    }
+                } else {
+                    // Match Incorrecto
+                    setTimeout(() => {
+                        selectedTerm.classList.remove('selected');
+                        selectedDef.classList.remove('selected');
+                        selectedTerm = null;
+                        selectedDef = null;
+                        alert("Intenta de nuevo, esos conceptos no coinciden.");
+                    }, 500);
+                }
+            }
+        }
+
+        // --- FINALIZACIÓN ---
+        function showCelebration() {
+            document.getElementById('celebration-overlay').style.display = 'flex';
+        }
+
+        function finishModule() {
+            const currentModule = 6; 
+            const nextModule = 7; 
+            
+            // Guardar estado en localStorage
+            const savedState = localStorage.getItem(storageKey);
+            let state = savedState ? JSON.parse(savedState) : { completedModules: [], unlockedModules: [1] };
+            
+            if (!state.completedModules.includes(currentModule)) {
+                state.completedModules.push(currentModule);
+            }
+            if (!state.unlockedModules.includes(nextModule)) {
+                state.unlockedModules.push(nextModule);
+            }
+            
+            localStorage.setItem(storageKey, JSON.stringify(state));
+            
+            // Redireccionar
+            window.location.href = 'index.html';
+        }
+
+        // Inicializar
+        window.onload = function() {
+            updateUI();
+            initGame();
+        };
+
+    </script>
+</body>
+</html>

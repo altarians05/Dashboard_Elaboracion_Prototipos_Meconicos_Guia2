@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 3: Reflexión Inicial - Diseño CAD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Paleta Institucional */
+            --sena-green: #39A900; 
+            --sena-blue: #00324D; 
+            --sena-orange: #FF6C00;
+            --bg-body: #F4F6F9; 
+            --bg-card: #FFFFFF; 
+            --text-gray: #59667a;
+            --shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-body); color: var(--sena-blue); line-height: 1.6; }
+        
+        /* HEADER */
+        header { background-color: var(--bg-card); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .back-btn { text-decoration: none; color: var(--sena-blue); font-weight: bold; display: flex; align-items: center; gap: 10px; transition: color 0.3s; }
+        .back-btn:hover { color: var(--sena-orange); }
+        .header-title { text-align: center; font-family: 'Montserrat'; text-transform: uppercase; font-size: 0.5rem; color: var(--sena-blue); flex-grow: 1; letter-spacing: 1px;}
+
+        /* CONTENIDO */
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 20px; padding-bottom: 4rem; }
+        .banner-container { width: 100%; margin-bottom: 2rem; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); background: white; text-align: center; }
+        .banner-container img { width: 100%; max-height: 300px; object-fit: cover; }
+        
+        .info-card { background: var(--bg-card); border-radius: var(--radius); padding: 3rem; box-shadow: var(--shadow); border-top: 5px solid var(--sena-green); margin-bottom: 2rem; }
+        .section-title { font-family: 'Montserrat'; color: var(--sena-green); font-size: 1.2rem; margin-bottom: 0.5rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+        .data-block { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; }
+        .data-value { font-size: 1.1rem; color: var(--sena-blue); }
+
+        /* Estilos Específicos Módulo Reflexión */
+        .intro-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; align-items: center; }
+        .tecnobot-img { width: 100%; max-width: 250px; animation: float 3s ease-in-out infinite; }
+        
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+
+        /* Tarjetas Interactivas (Flip Cards) */
+        .concept-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 2rem; }
+        .card-flip { background-color: transparent; height: 200px; perspective: 1000px; cursor: pointer; }
+        .card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; border-radius: var(--radius); box-shadow: var(--shadow); }
+        .card-flip:hover .card-inner { transform: rotateY(180deg); }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: var(--radius); padding: 15px; }
+        .card-front { background-color: #fff; border: 2px solid #eee; }
+        .card-back { background-color: var(--sena-blue); color: white; transform: rotateY(180deg); }
+        .card-icon { font-size: 3rem; color: var(--sena-orange); margin-bottom: 10px; }
+
+        /* Video Container */
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: var(--radius); box-shadow: var(--shadow); margin: 2rem 0; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* Actividad de Emparejamiento */
+        .matching-game { background: #f8fafc; padding: 20px; border-radius: var(--radius); border: 2px dashed var(--sena-blue); }
+        .game-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
+        .game-item { background: white; padding: 15px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.3s; text-align: center; }
+        .game-item:hover { background: #e3f2fd; border-color: var(--sena-blue); }
+        .game-item.selected { background: var(--sena-orange); color: white; border-color: var(--sena-orange); }
+        .game-item.matched { background: var(--sena-green); color: white; border-color: var(--sena-green); cursor: default; pointer-events: none; }
+        
+        /* Personajes */
+        .character-section { display: flex; align-items: flex-start; gap: 20px; background: #e8f5e9; padding: 20px; border-radius: var(--radius); margin-bottom: 2rem; }
+        .character-img { width: 120px; height: auto; }
+        .bubble { background: white; padding: 15px; border-radius: 15px; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .bubble::after { content: ''; position: absolute; left: -10px; top: 20px; border-width: 10px; border-style: solid; border-color: transparent white transparent transparent; }
+
+        /* Overlay de Celebración */
+       /* Overlay de Celebración - Mejorado para Insignia de Plata */
+        #celebration-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 50, 77, 0.98); /* Fondo más opaco */
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 2000; color: white; text-align: center; padding: 20px;
+        }
+        .badge-anim { 
+            width: 350px; /* Tamaño grande de la insignia */
+            max-width: 80vw;
+            animation: pulseBadge 2.5s infinite ease-in-out; 
+            margin-bottom: 30px; 
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
+        }
+        @keyframes pulseBadge {
+            0% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.6)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3)); }
+        }
+
+        /* Botones de Navegación */
+        .nav-controls { display: flex; justify-content: center; margin-top: 2rem; }
+        .btn-main { background: var(--sena-orange); color: white; border: none; padding: 12px 30px; font-size: 1rem; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0 #c45200; transition: transform 0.2s; display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #c45200; }
+        .btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #c45200; }
+        
+        .btn-finalize { background: var(--sena-green); box-shadow: 0 4px 0 #2e8b00; }
+        .btn-finalize:hover { box-shadow: 0 6px 0 #2e8b00; background: #2e8b00; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="imagenes/Logos/sena.png" alt="Logo SENA" style="height: 45px; width: auto;">
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Centro de Comando</a>
+        </div>
+        <div class="header-title">
+            <h1>Módulo 3: Reflexión Inicial</h1>
+        </div>
+        <img src="imagenes/Logos/tecnoacademia.jpeg" alt="Logo Tecnoacademia" style="height: 45px; width: auto;">
+    </header>
+
+    <div class="container">
+        
+        <div class="banner-container">
+            <img src="imagenes/Fondos/Titulos_Mesa de trabajo 1 copia.png" alt="Banner Prototipado">
+        </div>
+
+        <div class="info-card">
+            <div class="intro-grid">
+                <div>
+                    <img src="imagenes/Personajes/tecnoBot/para talleres_Mesa de trabajo 1.png" alt="TecnoBot" class="tecnobot-img">
+                </div>
+                <div>
+                    <h2 class="section-title"><i class="fas fa-rocket"></i> Misión: El Mundo Digital</h2>
+                    <p style="margin-bottom: 15px;">¡Bienvenido Maker! Antes de cortar madera o imprimir en 3D, todo gran ingeniero debe saber visualizar sus ideas. En este módulo entenderemos la importancia del <strong>Diseño Asistido por Computadora (CAD)</strong>.</p>
+                    
+                    <div class="data-block">
+                        <strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Conocer qué es un modelo digital y para qué se usa en ingeniería.
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9rem;">
+                        <div><i class="fas fa-clock"></i> <strong>Duración:</strong> 4 Horas</div>
+                        <div><i class="fas fa-users"></i> <strong>Modalidad:</strong> Grupal/Presencial</div>
+                        <div><i class="fas fa-laptop-code"></i> <strong>Material:</strong> Computador, Proyector</div>
+                        <div><i class="fas fa-tasks"></i> <strong>Evidencia:</strong> Juego de Emparejamiento</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h2 class="section-title"><i class="fas fa-brain"></i> Conceptos Clave</h2>
+            <p>Pasa el mouse (o toca) sobre las tarjetas para descubrir por qué pasamos del papel a la pantalla.</p>
+            
+            <div class="concept-cards">
+                <div class="card-flip">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <i class="fas fa-pencil-ruler card-icon"></i>
+                            <h3>Boceto a Mano</h3>
+                        </div>
+                        <div class="card-back">
+                            <p>Es rápido y artístico, pero difícil de editar y no sirve para que las máquinas entiendan las medidas exactas.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-flip">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <i class="fas fa-cube card-icon"></i>
+                            <h3>Modelo 3D</h3>
+                        </div>
+                        <div class="card-back">
+                            <p>Representación virtual con volumen (alto, ancho y profundo). Nos permite ver el objeto desde cualquier ángulo.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-flip">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <i class="fas fa-print card-icon"></i>
+                            <h3>Prototipado</h3>
+                        </div>
+                        <div class="card-back">
+                            <p>Gracias al modelo digital, podemos usar Impresoras 3D o Cortadoras Láser para crear el objeto real.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="character-section">
+                <img src="imagenes/Personajes/Maker/CellEste.png" alt="CellEste Maker" class="character-img">
+                <div class="bubble">
+                    <h4 style="color: var(--sena-orange); margin-bottom: 5px;">Hola, soy CellEste</h4>
+                    <p>El CAD (Diseño Asistido por Computadora) es como tener un taller infinito dentro de tu PC. Sustituye el dibujo manual por precisión matemática.</p>
+                    <p>Observa el siguiente video con atención, te ayudará a diferenciar entre <strong>2D (Planos)</strong> y <strong>3D (Volumen)</strong>.</p>
+                </div>
+            </div>
+
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/6peY45wSpKQ" title="Modelado 3D Explicado" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <div style="display: flex; gap: 20px; align-items: center; margin-top: 2rem; flex-wrap: wrap;">
+                <div style="flex: 1;">
+                    <h3 style="color: var(--sena-blue); margin-bottom: 10px;">Del Papel a la Realidad</h3>
+                    <p>Mira la imagen de la derecha. Un boceto (dibujo rápido) es el primer paso. Pero para que un motor funcione o una pieza encaje, necesitamos llevar ese boceto a un programa CAD.</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>2D:</strong> Solo tiene X e Y (Plano).</li>
+                        <li><strong>3D:</strong> Agregamos Z (Profundidad/Extrusión).</li>
+                    </ul>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                    <img src="imagenes/Otros/boceto2.png" alt="Boceto vs CAD" style="max-width: 100%; border-radius: 10px; border: 2px solid #eee;">
+                    <p style="font-size: 0.8rem; color: #888;">Ejemplo de boceto técnico</p>
+                </div>
+            </div>
+        </div>
+
+<div class="info-card">
+    <h2 class="section-title"><i class="fas fa-globe-americas"></i> Nuestra Ruta de Impacto</h2>
+    
+    <div class="character-section" style="background: #e3f2fd; margin-bottom: 1.5rem;">
+        <img src="imagenes/Personajes/Maker/Facilitador_Ciencias2.png" alt="Facilitador Ciencias" class="character-img">
+        <div class="bubble">
+            <p>Continuando con <strong>La Expedición Maker Camp Tecno: “Desafíos Creativos en la Fábrica de la Innovación"</strong>, nos adentramos en el segundo desafío. ¡Es hora de alinear nuestra creatividad con el planeta!</p>
+        </div>
+    </div>
+
+    <div class="character-section" style="background: #fff3e0; margin-bottom: 2rem;">
+        <div class="bubble" style="&::after { left: auto; right: -10px; border-color: transparent transparent transparent white; }">
+            <h4 style="color: var(--sena-orange);">Desafío 2: El Laberinto de la Tecnología</h4>
+            <p>Navegarás por un laberinto de software donde demostrarás tus habilidades de diseño, desde la creación de modelos 2D y 3D hasta la construcción de planos técnicos, tal como lo hacen los grandes inventores que transforman el mundo.</p>
+        </div>
+        <img src="imagenes/Personajes/Maker/facilitador_Nanotecnologia2.png" alt="Facilitador Nanotecnología" class="character-img">
+    </div>
+
+    <p style="text-align: center; margin-bottom: 2rem;"><strong>En este desafío, impactamos directamente los siguientes Objetivos de Desarrollo Sostenible:</strong></p>
+
+    <style>
+        .ods-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .ods-item { background: #f9f9f9; padding: 15px; border-radius: 10px; border-left: 5px solid var(--sena-green); transition: 0.3s; }
+        .ods-item:hover { transform: scale(1.02); background: #fff; box-shadow: var(--shadow); }
+        .ods-img { width: 80px; height: 80px; display: block; margin: 0 auto 10px; border-radius: 8px; }
+        .ods-desc { font-size: 0.85rem; text-align: justify; color: var(--text-gray); }
+        .ods-title { font-weight: bold; font-size: 0.9rem; color: var(--sena-blue); display: block; margin-bottom: 5px; text-align: center; }
+    </style>
+
+    <div class="ods-container">
+        <div class="ods-item">
+            <img src="imagenes/ODS/ODS_3.png" alt="ODS 3" class="ods-img">
+            <span class="ods-title">ODS 3: Salud y Bienestar</span>
+            <p class="ods-desc">El diseño CAD permite crear prótesis y dispositivos médicos precisos que mejoran la calidad de vida y garantizan una vida sana para todas las edades.</p>
+        </div>
+        <div class="ods-item">
+            <img src="imagenes/ODS/ODS_4.png" alt="ODS 4" class="ods-img">
+            <span class="ods-title">ODS 4: Educación de Calidad</span>
+            <p class="ods-desc">Promovemos el aprendizaje de herramientas tecnológicas de vanguardia, asegurando que adquieras competencias técnicas para el empleo decente.</p>
+        </div>
+        <div class="ods-item">
+            <img src="imagenes/ODS/ODS_8.png" alt="ODS 8" class="ods-img">
+            <span class="ods-title">ODS 8: Trabajo Decente</span>
+            <p class="ods-desc">Dominar el software de diseño industrial impulsa la productividad económica y prepara a los jóvenes para los trabajos del futuro.</p>
+        </div>
+        <div class="ods-item">
+            <img src="imagenes/ODS/ODS_9.png" alt="ODS 9" class="ods-img">
+            <span class="ods-title">ODS 9: Industria e Innovación</span>
+            <p class="ods-desc">La base de la innovación es el diseño. Con CAD, optimizamos recursos en la industria, fomentando una infraestructura resiliente y sostenible.</p>
+        </div>
+    </div>
+</div>
+
+        <div class="info-card">
+            <h2 class="section-title"><i class="fas fa-gamepad"></i> Desafío de Ingeniería</h2>
+            <p>Empareja el concepto de la izquierda con su definición o característica correcta a la derecha. ¡Demuestra que estás listo para diseñar!</p>
+            
+            <div class="matching-game" id="game-area">
+                <div class="game-columns">
+                    <div class="column-a" id="col-a">
+                        </div>
+                    <div class="column-b" id="col-b">
+                        </div>
+                </div>
+                <p id="game-status" style="text-align: center; margin-top: 15px; font-weight: bold; color: var(--text-gray);">Selecciona un ítem de cada columna...</p>
+            </div>
+
+            <div class="nav-controls" id="final-btn-container" style="display: none;">
+                <button class="btn-main btn-finalize" onclick="showCelebration()">
+                    <i class="fas fa-check-circle"></i> Finalizar Actividad
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="celebration-overlay">
+        <h1 style="font-family: 'Montserrat'; font-size: 3rem; color: var(--sena-orange); margin-bottom: 20px; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">¡FELICITACIONES!</h1>
+        
+        <img src="imagenes/Insignias/Insignias Mohs/01 - Insignias MOHS-Plata.png" class="badge-anim" alt="Insignia de Plata Ganada">
+        
+        <p style="font-size: 1.5rem; max-width: 700px; margin-bottom: 10px; font-weight: 300;">Has desbloqueado la <strong>Insignia de Plata</strong> en Diseño Mecánico.</p>
+        <p style="font-size: 1.1rem; color: #bdc3c7; margin-bottom: 30px;">Misión de reflexión completada con éxito. El Centro de Comando te espera.</p>
+        
+        <button class="btn-main" style="padding: 10px 25px; font-size: 0.9rem; background: var(--sena-green); box-shadow: 0 4px 0 #236900;" onclick="finishModule()">
+            Continuar al Siguiente Nivel <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <script>
+        /* --- LÓGICA DEL JUEGO DE EMPAREJAMIENTO --- */
+        const terms = [
+            { id: 1, text: "CAD", match: "Diseño Asistido por Computadora" },
+            { id: 2, text: "2D", match: "Tiene Alto y Ancho (Plano)" },
+            { id: 3, text: "3D", match: "Tiene Volumen y Profundidad" },
+            { id: 4, text: "Boceto", match: "Dibujo rápido a mano alzada" }
+        ];
+
+        let selectedA = null;
+        let selectedB = null;
+        let matchesFound = 0;
+
+        function initGame() {
+            const colA = document.getElementById('col-a');
+            const colB = document.getElementById('col-b');
+            
+            // Mezclar arrays para aleatoriedad
+            const termsA = [...terms].sort(() => Math.random() - 0.5);
+            const termsB = [...terms].sort(() => Math.random() - 0.5);
+
+            termsA.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'game-item';
+                div.textContent = item.text;
+                div.dataset.id = item.id;
+                div.onclick = () => selectItem(div, 'A');
+                colA.appendChild(div);
+            });
+
+            termsB.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'game-item';
+                div.textContent = item.match;
+                div.dataset.id = item.id;
+                div.onclick = () => selectItem(div, 'B');
+                colB.appendChild(div);
+            });
+        }
+
+        function selectItem(element, column) {
+            if (element.classList.contains('matched')) return;
+
+            // Limpiar selección previa de la misma columna
+            const currentSelected = column === 'A' ? selectedA : selectedB;
+            if (currentSelected) currentSelected.classList.remove('selected');
+
+            element.classList.add('selected');
+
+            if (column === 'A') selectedA = element;
+            else selectedB = element;
+
+            checkMatch();
+        }
+
+        function checkMatch() {
+            if (selectedA && selectedB) {
+                if (selectedA.dataset.id === selectedB.dataset.id) {
+                    // Correcto
+                    document.getElementById('game-status').textContent = "¡Correcto! Sigue así.";
+                    document.getElementById('game-status').style.color = "var(--sena-green)";
+                    
+                    selectedA.classList.remove('selected');
+                    selectedB.classList.remove('selected');
+                    selectedA.classList.add('matched');
+                    selectedB.classList.add('matched');
+                    
+                    selectedA = null;
+                    selectedB = null;
+                    matchesFound++;
+
+                    if (matchesFound === terms.length) {
+                        document.getElementById('game-status').textContent = "¡JUEGO COMPLETADO!";
+                        document.getElementById('final-btn-container').style.display = 'flex';
+                    }
+
+                } else {
+                    // Incorrecto
+                    document.getElementById('game-status').textContent = "No coinciden, intenta de nuevo.";
+                    document.getElementById('game-status').style.color = "red";
+                    
+                    setTimeout(() => {
+                        if(selectedA) selectedA.classList.remove('selected');
+                        if(selectedB) selectedB.classList.remove('selected');
+                        selectedA = null;
+                        selectedB = null;
+                    }, 1000);
+                }
+            }
+        }
+
+        /* --- LÓGICA DE NAVEGACIÓN Y COMPLETADO --- */
+        
+        // Inicializar juego al cargar
+        window.onload = initGame;
+
+        const storageKey = 'makerCourseState'; // Variable sincronizada con index
+
+        function showCelebration() {
+            document.getElementById('celebration-overlay').style.display = 'flex';
+        }
+
+        function finishModule() {
+            // Obtener estado actual
+            let state = JSON.parse(localStorage.getItem(storageKey));
+            
+            if (state) {
+                // 1. Marcar Módulo 3 (Este módulo, según tu indicación de "completó 3") como hecho
+                // NOTA: Asumo que en el array el ID es 3. Si es reflexión inicial podría ser otro ID, 
+                // pero sigo tu instrucción estricta: "numero del modulo que se completo (3)".
+                if (!state.completedModules.includes(3)) {
+                    state.completedModules.push(3);
+                }
+
+                // 2. Desbloquear Módulo 4
+                if (!state.unlockedModules.includes(4)) {
+                    state.unlockedModules.push(4);
+                }
+
+                // 3. Guardar cambios
+                localStorage.setItem(storageKey, JSON.stringify(state));
+                
+                // 4. Redirigir
+                window.location.href = 'index.html';
+            } else {
+                // Fallback si no hay estado (testing)
+                alert("Modo prueba: No se encontró sesión activa, redirigiendo...");
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+
+</body>
+</html>
